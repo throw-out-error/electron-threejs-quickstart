@@ -5,9 +5,6 @@
 # Logs
 logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # Runtime data
 pids
@@ -58,9 +55,6 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
-
 
 ### VisualStudioCode ###
 .vscode/*
@@ -71,4 +65,4 @@ typings/
 
 # End of https://www.gitignore.io/api/node,visualstudiocode
 
-out-tsc
+dist

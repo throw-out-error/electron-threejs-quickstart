@@ -1,0 +1,37 @@
+{
+  "name": "electron-client",
+  "version": "1.0.0",
+  "description": "A minimal Electron application with three.js",
+  "main": "main.js",
+  "scripts": {
+    "prestart": "npm run build",
+    "start": "electron .",
+    "build": "shx mkdir dist & browserify src/core.ts -p [ tsify ] > dist/bundle.js",
+    "web": "npm run build && serve ."
+  },
+  "keywords": [
+    "Electron",
+    "three"
+  ],
+  "author": "Throw Out Error",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^16.5.1",
+    "electron": "~9.0.5",
+    "electron-reload": "^1.5.0",
+    "serve": "^11.3.2",
+    "tsify": "^4.0.2",
+    "typescript": "^3.9.6"
+  },
+  "dependencies": {
+    "@throw-out-error/throw-out-utils": "^1.1.1",
+    "@types/socket.io-client": "^1.4.33",
+    "@types/stats": "^0.16.30",
+    "concurrently": "^5.2.0",
+    "eventemitter3": "^4.0.4",
+    "shx": "^0.3.2",
+    "socket.io-client": "^2.3.0",
+    "stats.js": "^0.17.0",
+    "three": "^0.118.3"
+  }
+}

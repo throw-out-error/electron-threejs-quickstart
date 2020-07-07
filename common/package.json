@@ -1,0 +1,15 @@
+{
+  "name": "@throw-out-error/game-common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "keywords": [],
+  "author": "Throw Out Error",
+  "license": "MIT",
+  "dependencies": {
+    "@throw-out-error/throw-out-utils": "^1.1.1"
+  }
+}
