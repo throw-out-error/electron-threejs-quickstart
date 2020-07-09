@@ -9,6 +9,7 @@ import {
 import EventEmitter from "eventemitter3";
 import { Entity } from "../../common/src/entity";
 import { Player } from "./entities/player";
+import { socket } from "./socket";
 
 export class Game extends EventEmitter {
     renderer: WebGLRenderer;
@@ -18,7 +19,7 @@ export class Game extends EventEmitter {
     constructor() {
         super();
         this.scene = new Scene();
-        this.renderer = new WebGLRenderer();
+        this.renderer = new WebGLRenderer({ preserveDrawingBuffer: true });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
 
         document.body.appendChild(this.renderer.domElement);
@@ -31,7 +32,13 @@ export class Game extends EventEmitter {
         return this.entities.filter((e) => e instanceof Player);
     }
 
-    
+    /**
+     * Returns an array that contains all entities that are players
+     */
+    getPlayer(id: string) {
+        return this.getPlayers().filter((p) => p.id === id);
+    }
+
     /**
      * Returns an array that contains all entities in the game
      */
@@ -46,7 +53,10 @@ export class Game extends EventEmitter {
 }
 
 export const game = new Game();
-document.getElementById("play")!.addEventListener("click", () => {
+setTimeout(() => {
     game.emit("ready");
     game.animate();
-});
+}, 1000);
+document.getElementById("play")!.onclick = () => {
+    game.emit("reset");
+};

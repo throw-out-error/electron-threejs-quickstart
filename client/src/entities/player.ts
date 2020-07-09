@@ -4,67 +4,82 @@ import {
     MeshBasicMaterial,
     Scene,
     PerspectiveCamera,
+    Camera,
     Clock,
-    WebGLRenderer,
+    Vector3,
 } from "THREE";
-import { FirstPersonControls } from "../controls/fps-controls";
+// import { FirstPersonControls } from "../controls/fps-controls";
+import FirstPersonControls from "../controls/fps-controls";
 import { Vector, Tensor } from "@throw-out-error/throw-out-utils";
 import { Entity } from "../../../common/src/entity";
 import { Game } from "../game";
+import { socket } from "../socket";
 
 export class Player extends Entity {
     mesh: Mesh;
     material: MeshBasicMaterial;
     geometry: BoxGeometry;
-    constructor(renderer: Game, id: string) {
+    constructor(game: Game, id: string) {
         super(id, "player");
-        this.geometry = new BoxGeometry(1, 2, 1);
+        this.geometry = new BoxGeometry(0.5, 2, 0.5);
         this.material = new MeshBasicMaterial({ color: 0xff0000 });
 
         this.mesh = new Mesh(this.geometry, this.material);
-        renderer.scene.add(this.mesh);
+        game.scene.add(this.mesh);
     }
+
+    update() {
+        this.transform.position.copy(this.mesh.position.toArray());
+        this.transform.rotation.copy(this.mesh.rotation.toArray());
+    }
+
+    /*     getWorldPosition(): Tensor<Vector> {
+        let v = new Vector3(0, 0, 0);
+        this.mesh.getWorldPosition(v);
+        return Tensor.from(v.x, v.y, v.z);
+    } */
 }
 
 export class ClientPlayer extends Player {
     controls: FirstPersonControls;
     camera: PerspectiveCamera;
     clock: Clock;
+    timer!: any;
 
-    constructor(renderer: Game, id: string) {
-        super(renderer, id);
+    constructor(game: Game, id: string) {
+        super(game, id);
 
         this.camera = new PerspectiveCamera(
             75,
             window.innerWidth / window.innerHeight,
-            1,
+            0.1,
             10000,
         );
-        this.camera.position.z = 10;
+        this.camera.position.y = -0.5;
+        this.camera.rotation.order = "YXZ"; // this is not the default
         this.controls = new FirstPersonControls(
             this.camera,
-            70,
-            2,
-            false,
-            renderer.scene.children
+            this.mesh,
+            game.renderer.domElement,
         );
-        // this.controls.lock();
-        document.addEventListener("keydown", (event) => {
-            if (event.key === "Escape") {
-                this.controls.isLocked
-                    ? this.controls.unlock()
-                    : this.controls.lock();
-                this.controls.isLocked = !this.controls.isLocked;
-            }
+
+        document.addEventListener("keyup", (event) => {
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                if (event.key === "Escape") {
+                    this.controls.toggleLock();
+                }
+            }, 1000);
         });
         this.clock = new Clock();
         this.clock.start();
     }
 
     update() {
-        this.controls.updateControls();
-        this.mesh.position.copy(this.camera.position);
-        this.mesh.rotation.x += 0.01;
-        this.mesh.rotation.y += 0.02;
+        super.update();
+        this.camera.position.copy(this.mesh.position);
+        socket.emit("playerPosition", {
+            position: this.transform.position.toArray(),
+        });
     }
 }

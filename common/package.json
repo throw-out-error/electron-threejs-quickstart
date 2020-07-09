@@ -10,6 +10,11 @@
   "author": "Throw Out Error",
   "license": "MIT",
   "dependencies": {
-    "@throw-out-error/throw-out-utils": "^1.1.1"
+    "@math.gl/core": "^3.2.2",
+    "@throw-out-error/throw-out-utils": "^1.1.1",
+    "@trinkets/noise": "0.0.4"
+  },
+  "devDependencies": {
+    "typescript": "^3.9.6"
   }
 }
